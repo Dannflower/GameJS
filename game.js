@@ -10,8 +10,13 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '
 
 var cursors;
 var player;
+var map;
+var gameScale = new PIXI.Point(6, 6);
 
 function preload() {
+
+  game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+  game.scale.parentIsWindow = true;
 
   game.time.advancedTiming = true;
 
@@ -24,31 +29,45 @@ function preload() {
 
 function create() {
 
-  game.world.setBounds(0, 0, 2000, 2000);
+  cursors = game.input.keyboard.createCursorKeys();
+  mouse = game.input.mousePointer;
 
-  var map = game.add.tilemap('map_7Soul', null, null, null, null);
+
+
+  map = game.add.tilemap('map_7Soul', null, null, null, null);
 
   map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
   map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
 
-  var layer1 = map.createLayer('Tile Layer 1', null, null, mapGroup);
-  var layer2 = map.createLayer('Tile Layer 2', null, null, mapGroup);
-  var layer3 = map.createLayer('Tile Layer 3', null, null, mapGroup);
+  var gameGroup = game.add.group();
+  gameGroup.scale = gameScale;
 
-  player = game.add.sprite(200, 300, 'Player');
+  var layer1 = map.createLayer('Tile Layer 1', null, null, gameGroup);
+  var layer2 = map.createLayer('Tile Layer 2', null, null, gameGroup);
+  var layer3 = map.createLayer('Tile Layer 3', null, null, gameGroup);
 
-  game.world.scale.set(5);
+  player = game.add.sprite(200, 300, 'Player', null, gameGroup);
 
   game.camera.follow(player);
 
-  var mapGroup = game.add.group();
+  map.currentLayer = layer1;
 
-  cursors = game.input.keyboard.createCursorKeys();
+  game.world.setBounds(0, 0, map.widthInPixels * gameScale.x, map.heightInPixels * gameScale.y);
 }
 
 function update() {
 
-  var moveRate = 5;
+  var moveRate = 4;
+
+  if(mouse.leftButton.isDown) {
+
+    console.log('x: ' + mouse.x + ', y: ' + mouse.y);
+
+    var tileX = map.currentLayer.getTileX(getMouseWorldX() / gameScale.x);
+    var tileY = map.currentLayer.getTileY(getMouseWorldY() / gameScale.y);
+    console.log('Tile X: ' + tileX + ', Tile Y: ' + tileY);
+
+  }
 
   if (cursors.up.isDown)
     {
@@ -73,4 +92,14 @@ function render() {
 
     game.debug.cameraInfo(game.camera, 32, 32);
     game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
+}
+
+function getMouseWorldX() {
+
+  return mouse.x + game.camera.x;
+}
+
+function getMouseWorldY() {
+
+  return mouse.y + game.camera.y;
 }
