@@ -11,7 +11,11 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '
 var cursors;
 var player;
 var map;
-var gameScale = new PIXI.Point(6, 6);
+var gameScale = new PIXI.Point(1, 1);
+var gameGroup;
+
+var numberOfTilesForLongDimension = 20;
+var numberOfTilesForShortDimension = 15;
 
 function preload() {
 
@@ -33,26 +37,27 @@ function create() {
   mouse = game.input.mousePointer;
 
 
+  game.scale.onSizeChange.add(onSizeChange);
 
   map = game.add.tilemap('map_7Soul', null, null, null, null);
 
   map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
   map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
 
-  var gameGroup = game.add.group();
-  gameGroup.scale = gameScale;
+  gameGroup = game.add.group();
 
   var layer1 = map.createLayer('Tile Layer 1', null, null, gameGroup);
   var layer2 = map.createLayer('Tile Layer 2', null, null, gameGroup);
+  player = game.add.sprite(200, 300, 'Player', null, gameGroup);
   var layer3 = map.createLayer('Tile Layer 3', null, null, gameGroup);
 
-  player = game.add.sprite(200, 300, 'Player', null, gameGroup);
+
 
   game.camera.follow(player);
 
   map.currentLayer = layer1;
 
-  game.world.setBounds(0, 0, map.widthInPixels * gameScale.x, map.heightInPixels * gameScale.y);
+  updateGameScale();
 }
 
 function update() {
@@ -94,6 +99,13 @@ function render() {
     game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
 
+function onSizeChange(scaleManager, canvasWidth, canvasHeight) {
+
+  console.log('Width: ' + scaleManager.game.width + " Height: " + scaleManager.game.height);
+
+  updateGameScale();
+}
+
 function getMouseWorldX() {
 
   return mouse.x + game.camera.x;
@@ -102,4 +114,43 @@ function getMouseWorldX() {
 function getMouseWorldY() {
 
   return mouse.y + game.camera.y;
+}
+
+function updateGameScale() {
+
+  gameScale = new PIXI.Point(getScaleX(), getScaleY());
+  gameGroup.scale = gameScale;
+  game.world.setBounds(0, 0, map.widthInPixels * gameScale.x, map.heightInPixels * gameScale.y);
+}
+
+function getScaleX() {
+
+  var tileCount;
+
+  if(game.scale.width >= game.scale.height) {
+
+    tileCount = numberOfTilesForLongDimension;
+
+  } else {
+
+    tileCount = numberOfTilesForShortDimension;
+  }
+
+  return game.scale.width / (map.tileWidth * tileCount);
+}
+
+function getScaleY() {
+
+  var tileCount;
+
+  if(game.scale.height >= game.scale.width) {
+
+    tileCount = numberOfTilesForLongDimension;
+
+  } else {
+
+    tileCount = numberOfTilesForShortDimension;
+  }
+
+  return game.scale.height / (map.tileHeight * tileCount);
 }
