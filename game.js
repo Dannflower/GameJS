@@ -13,6 +13,7 @@ var player;
 var map;
 var cameraScale = new PIXI.Point(1, 1);
 var mapLayerGroup;
+var pointer;
 
 var numberOfTilesForLongDimension = 20;
 var numberOfTilesForShortDimension = 15;
@@ -34,7 +35,8 @@ function preload() {
 function create() {
 
   cursors = game.input.keyboard.createCursorKeys();
-  mouse = game.input.mousePointer;
+  //mouse = game.input.mousePointer;
+  pointer = game.input.addPointer();
 
   game.scale.onSizeChange.add(onSizeChange);
 
@@ -50,6 +52,8 @@ function create() {
   player = game.add.sprite(200, 300, 'Player');//, null, mapLayerGroup);
   var layer3 = map.createLayer('Tile Layer 3', null, null, mapLayerGroup);
 
+  //layer1.resizeWorld();
+
   game.camera.follow(player);
 
   updateGameScale();
@@ -59,7 +63,7 @@ function update() {
 
   var moveRate = 4;
 
-  if(mouse.leftButton.isDown) {
+  //if(mouse.leftButton.isDown) {
 
     //console.log('x: ' + mouse.x + ', y: ' + mouse.y);
 
@@ -67,6 +71,28 @@ function update() {
     //var tileY = map.currentLayer.getTileY(getMouseWorldY() / cameraScale.y);
     //console.log('Tile X: ' + tileX + ', Tile Y: ' + tileY);
 
+  //}
+
+
+  if(game.input.pointer1.isDown || game.input.mousePointer.isDown) {
+
+    if(game.input.pointer1.x > player.worldPosition.x) {
+
+      player.x += moveRate;
+
+    } else if (game.input.pointer1.x < player.worldPosition.x) {
+
+      player.x -= moveRate;
+    }
+
+    if(game.input.pointer1.y > player.worldPosition.y) {
+
+      player.y += moveRate;
+
+    } else if (game.input.pointer1.y < player.worldPosition.y) {
+
+      player.y -= moveRate;
+    }
   }
 
   if (cursors.up.isDown)
@@ -89,7 +115,7 @@ function update() {
 }
 
 function render() {
-
+  game.debug.pointer(game.input.pointer1);
     game.debug.cameraInfo(game.camera, 32, 32);
     game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
 }
@@ -145,7 +171,7 @@ function getScaleX() {
     tileCount = numberOfTilesForShortDimension;
   }
 
-  return game.camera.width / (map.tileWidth * tileCount);
+  return Math.max(1, game.camera.width / (map.tileWidth * tileCount));
 }
 
 function getScaleY() {
@@ -161,5 +187,5 @@ function getScaleY() {
     tileCount = numberOfTilesForShortDimension;
   }
 
-  return game.camera.height / (map.tileHeight * tileCount);
+  return Math.max(1, game.camera.height / (map.tileHeight * tileCount));
 }
