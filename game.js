@@ -11,8 +11,8 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '
 var cursors;
 var player;
 var map;
-var gameScale = new PIXI.Point(1, 1);
-var gameGroup;
+var cameraScale = new PIXI.Point(1, 1);
+var mapLayerGroup;
 
 var numberOfTilesForLongDimension = 20;
 var numberOfTilesForShortDimension = 15;
@@ -36,7 +36,6 @@ function create() {
   cursors = game.input.keyboard.createCursorKeys();
   mouse = game.input.mousePointer;
 
-
   game.scale.onSizeChange.add(onSizeChange);
 
   map = game.add.tilemap('map_7Soul', null, null, null, null);
@@ -44,18 +43,14 @@ function create() {
   map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
   map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
 
-  gameGroup = game.add.group();
+  mapLayerGroup = game.add.group();
 
-  var layer1 = map.createLayer('Tile Layer 1', null, null, gameGroup);
-  var layer2 = map.createLayer('Tile Layer 2', null, null, gameGroup);
-  player = game.add.sprite(200, 300, 'Player', null, gameGroup);
-  var layer3 = map.createLayer('Tile Layer 3', null, null, gameGroup);
-
-
+  var layer1 = map.createLayer('Tile Layer 1', null, null, mapLayerGroup);
+  var layer2 = map.createLayer('Tile Layer 2', null, null, mapLayerGroup);
+  player = game.add.sprite(200, 300, 'Player');//, null, mapLayerGroup);
+  var layer3 = map.createLayer('Tile Layer 3', null, null, mapLayerGroup);
 
   game.camera.follow(player);
-
-  map.currentLayer = layer1;
 
   updateGameScale();
 }
@@ -66,11 +61,11 @@ function update() {
 
   if(mouse.leftButton.isDown) {
 
-    console.log('x: ' + mouse.x + ', y: ' + mouse.y);
+    //console.log('x: ' + mouse.x + ', y: ' + mouse.y);
 
-    var tileX = map.currentLayer.getTileX(getMouseWorldX() / gameScale.x);
-    var tileY = map.currentLayer.getTileY(getMouseWorldY() / gameScale.y);
-    console.log('Tile X: ' + tileX + ', Tile Y: ' + tileY);
+    //var tileX = map.currentLayer.getTileX(getMouseWorldX() / cameraScale.x);
+    //var tileY = map.currentLayer.getTileY(getMouseWorldY() / cameraScale.y);
+    //console.log('Tile X: ' + tileX + ', Tile Y: ' + tileY);
 
   }
 
@@ -101,7 +96,7 @@ function render() {
 
 function onSizeChange(scaleManager, canvasWidth, canvasHeight) {
 
-  console.log('Width: ' + scaleManager.game.width + " Height: " + scaleManager.game.height);
+  //console.log('Width: ' + scaleManager.game.width + " Height: " + scaleManager.game.height);
 
   updateGameScale();
 }
@@ -118,16 +113,30 @@ function getMouseWorldY() {
 
 function updateGameScale() {
 
-  gameScale = new PIXI.Point(getScaleX(), getScaleY());
-  gameGroup.scale = gameScale;
-  game.world.setBounds(0, 0, map.widthInPixels * gameScale.x, map.heightInPixels * gameScale.y);
+  game.camera.scale.set(getScaleX(), getScaleY());
+  game.world.setBounds(0, 0, map.widthInPixels * game.camera.scale.x, map.heightInPixels * game.camera.scale.y);
+  game.camera.setBoundsToWorld;
+
+  console.log(game.world.bounds);
+  console.log('camera bounds height:' + game.camera.bounds.height + ', width: ' + game.camera.bounds.width);
+  console.log('world bounds height: ' + game.world.bounds.height + ', width: ' + game.world.bounds.width);
+  console.log(game.camera.scale);
+
+  for (var i = 0; i < mapLayerGroup.children.length; i++) {
+
+    var layer = mapLayerGroup.children[i];
+
+    layer.resize(game.world.width, game.world.height);
+  }
+
+
 }
 
 function getScaleX() {
 
   var tileCount;
 
-  if(game.scale.width >= game.scale.height) {
+  if(game.camera.width >= game.camera.height) {
 
     tileCount = numberOfTilesForLongDimension;
 
@@ -136,14 +145,14 @@ function getScaleX() {
     tileCount = numberOfTilesForShortDimension;
   }
 
-  return game.scale.width / (map.tileWidth * tileCount);
+  return game.camera.width / (map.tileWidth * tileCount);
 }
 
 function getScaleY() {
 
   var tileCount;
 
-  if(game.scale.height >= game.scale.width) {
+  if(game.camera.height >= game.camera.width) {
 
     tileCount = numberOfTilesForLongDimension;
 
@@ -152,5 +161,5 @@ function getScaleY() {
     tileCount = numberOfTilesForShortDimension;
   }
 
-  return game.scale.height / (map.tileHeight * tileCount);
+  return game.camera.height / (map.tileHeight * tileCount);
 }

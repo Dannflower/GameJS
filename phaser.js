@@ -27586,10 +27586,10 @@ Phaser.Camera.prototype = {
         var vh = this.view.bottom + this._shake.y;
 
         //  Make sure we didn't go outside the cameras bounds
-        if (vx <= this.bounds.x * this.scale.x)
+        if (vx <= this.bounds.x)
         {
             this.atLimit.x = true;
-            this.view.x = this.bounds.x * this.scale.x;
+            this.view.x = this.bounds.x;
 
             if (!this._shake.shakeBounds)
             {
@@ -27597,10 +27597,10 @@ Phaser.Camera.prototype = {
                 this._shake.x = 0;
             }
         }
-        else if (vw >= this.bounds.right * this.scale.x)
+        else if (vw >= this.bounds.right)
         {
             this.atLimit.x = true;
-            this.view.x = (this.bounds.right * this.scale.x) - this.width;
+            this.view.x = (this.bounds.right) - this.width;
 
             if (!this._shake.shakeBounds)
             {
@@ -27609,10 +27609,10 @@ Phaser.Camera.prototype = {
             }
         }
 
-        if (vy <= this.bounds.top * this.scale.y)
+        if (vy <= this.bounds.top)
         {
             this.atLimit.y = true;
-            this.view.y = this.bounds.top * this.scale.y;
+            this.view.y = this.bounds.top;
 
             if (!this._shake.shakeBounds)
             {
@@ -27620,10 +27620,10 @@ Phaser.Camera.prototype = {
                 this._shake.y = 0;
             }
         }
-        else if (vh >= this.bounds.bottom * this.scale.y)
+        else if (vh >= this.bounds.bottom)
         {
             this.atLimit.y = true;
-            this.view.y = (this.bounds.bottom * this.scale.y) - this.height;
+            this.view.y = (this.bounds.bottom) - this.height;
 
             if (!this._shake.shakeBounds)
             {
@@ -100105,6 +100105,8 @@ Phaser.TilemapLayer.prototype.shiftCanvas = function (context, x, y) {
 * @param {integer} bottom - Bottommost row to render.
 */
 Phaser.TilemapLayer.prototype.renderRegion = function (scrollX, scrollY, left, top, right, bottom) {
+
+	//console.log('left: ' + left + ', top: ' + top + ', right: ' + right + ', bottom: ' + bottom);
 
     var context = this.context;
 
