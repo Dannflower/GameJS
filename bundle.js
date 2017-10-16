@@ -1,5 +1,10 @@
-import GameMap from './GameMap.js';
-import PlayMapState from './PlayMapState.js';
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = function() {
+    console.log("We've got something working!");
+}
+
+},{}],2:[function(require,module,exports){
+var testing = require('./GameMap.js');
 
 var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
 {
@@ -9,15 +14,14 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '
     render: render
 }, null, false);
 
-let cursors;
-let player;
-let map;
-let mouse;
-let mapLayerGroup;
-let pointer;
+var cursors;
+var player;
+var map;
+var mapLayerGroup;
+var pointer;
 
-let numberOfTilesForLongDimension = 25;
-let numberOfTilesForShortDimension = 15;
+var numberOfTilesForLongDimension = 25;
+var numberOfTilesForShortDimension = 15;
 
 function preload() {
 
@@ -34,9 +38,6 @@ function preload() {
 }
 
 function create() {
-
-  game.state.add("play", new PlayMapState);
-  game.state.start("play");
 
   cursors = game.input.keyboard.createCursorKeys();
   mouse = game.input.mousePointer;
@@ -62,6 +63,7 @@ function create() {
 
   updateGameScale();
 
+  testing();
 }
 
 function update() {
@@ -189,3 +191,5 @@ function getScaleY() {
 
   return Math.max(1, game.camera.height / (map.tileHeight * tileCount));
 }
+
+},{"./GameMap.js":1}]},{},[2]);
