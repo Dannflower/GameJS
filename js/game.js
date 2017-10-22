@@ -1,5 +1,4 @@
-import GameMap from './GameMap.js';
-import PlayMapState from './PlayMapState.js';
+import LoadMapState from '/js/state/LoadMapState.js';
 
 var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
 {
@@ -26,41 +25,24 @@ function preload() {
 
   game.time.advancedTiming = true;
 
-  game.load.image('Grasslands_A_file', 'assets/Tiles - Grasslands/Grasslands_A.png');
-  game.load.image('Grasslands_B_file', 'assets/Tiles - Grasslands/Grasslands_B.png');
-  game.load.image('Blocked_Tile', 'assets/Objects/Blocked Tile.png');
-  game.load.image('Player', 'assets/Sprites/Human (Front)/Full/player_01.png');
-  game.load.tilemap('map_7Soul', null, null, Phaser.Tilemap.TILED_JSON);
+
 }
 
 function create() {
 
-  game.state.add("play", new PlayMapState);
-  game.state.start("play");
+  game.state.add("LoadMapState", new LoadMapState('map_7Soul'));
+  game.state.start("LoadMapState");
 
   cursors = game.input.keyboard.createCursorKeys();
   mouse = game.input.mousePointer;
   pointer = game.input.addPointer();
 
-  game.scale.onSizeChange.add(onSizeChange);
+  //game.scale.onSizeChange.add(onSizeChange);
 
-  map = game.add.tilemap('map_7Soul', null, null, null, null);
 
-  map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
-  map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
+  //game.camera.follow(player);
 
-  mapLayerGroup = game.add.group();
-
-  var layer1 = map.createLayer('Tile Layer 1', null, null, mapLayerGroup);
-  var layer2 = map.createLayer('Tile Layer 2', null, null, mapLayerGroup);
-  var layer3 = map.createLayer('Tile Layer 3', null, null, mapLayerGroup);
-
-  map.currentLayer = layer1;
-
-  player = game.add.sprite(200, 300, 'Player');
-  game.camera.follow(player);
-
-  updateGameScale();
+  //updateGameScale();
 
 }
 
