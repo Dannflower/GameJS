@@ -11,12 +11,14 @@ export default class LoadMapState extends Phaser.State {
 
   preload() {
 
-    this.game.load.tilemap(this.mapName, null, null, Phaser.Tilemap.TILED_JSON);
+    let filePath = '/assets/maps/' + this.mapName + '.json';
+
+    this.game.load.json(this.mapName, filePath);
   }
 
   create() {
 
-    this.game.state.add("PlayMapState", new PlayMapState('map_7Soul'));
+    this.game.state.add("PlayMapState", new PlayMapState(this.mapName));
     this.game.state.start("PlayMapState");
   }
 }

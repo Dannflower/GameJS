@@ -14,14 +14,16 @@ export default class PlayMapState extends Phaser.State {
     this.game.load.image('Blocked_Tile', 'assets/Objects/Blocked Tile.png');
     this.game.load.image('Player', 'assets/Sprites/Human (Front)/Full/player_01.png');
 
-
+    let tilemapJson = this.game.cache.getJSON(this.mapName);
+    console.log(tilemapJson);
+    this.game.load.tilemap(this.mapName, null, tilemapJson, Phaser.Tilemap.TILED_JSON);
   }
 
   create() {
 
 
     this.map = this.game.add.tilemap(this.mapName, null, null, null, null);
-
+    console.log(this.map);
     this.map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
     this.map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
 
