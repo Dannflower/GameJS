@@ -9,13 +9,22 @@ export default class PlayMapState extends Phaser.State {
 
   preload() {
 
-    this.game.load.image('Grasslands_A_file', 'assets/Tiles - Grasslands/Grasslands_A.png');
-    this.game.load.image('Grasslands_B_file', 'assets/Tiles - Grasslands/Grasslands_B.png');
-    this.game.load.image('Blocked_Tile', 'assets/Objects/Blocked Tile.png');
-    this.game.load.image('Player', 'assets/Sprites/Human (Front)/Full/player_01.png');
+    this.game.load.image('Player', 'assets/tilesets/sprites/Human (Front)/Full/player_01.png');
 
+    // Read the previously parsed Tiled map JSON
     let tilemapJson = this.game.cache.getJSON(this.mapName);
-    console.log(tilemapJson);
+
+    // Load all the required tileset images
+    for(let tilesetId in tilemapJson.tilesets) {
+
+      let tilesetJson = tilemapJson.tilesets[tilesetId];
+      let assetName = tilesetJson.name;
+      let assetPath = 'assets/' + tilesetJson.image.substring(3);
+      
+      this.game.load.image(assetName, assetPath);
+    }
+
+    // Load the Tiled map JSON as an actual Tilemap
     this.game.load.tilemap(this.mapName, null, tilemapJson, Phaser.Tilemap.TILED_JSON);
   }
 
@@ -24,8 +33,14 @@ export default class PlayMapState extends Phaser.State {
 
     this.map = this.game.add.tilemap(this.mapName, null, null, null, null);
     console.log(this.map);
-    this.map.addTilesetImage('Grasslands_A', 'Grasslands_A_file');
-    this.map.addTilesetImage('Grasslands_B', 'Grasslands_B_file');
+
+    // Add the tileset images to the map
+    for(let tilesetId in this.map.tilesets) {
+
+      let tileset = this.map.tilesets[tilesetId];
+      console.log(tileset.name);
+      this.map.addTilesetImage(tileset.name, tileset.name);
+    }
 
     let mapLayerGroup = this.game.add.group();
 
@@ -38,6 +53,11 @@ export default class PlayMapState extends Phaser.State {
   }
 
   update() {
+
+
+  }
+
+  preLoadTileset(tilesetJson) {
 
 
   }
