@@ -1,3 +1,5 @@
+import MapManager from '/js/Map/MapManager.js';
+
 export default class PlayMapState extends Phaser.State {
 
   constructor(mapName) {
@@ -10,22 +12,12 @@ export default class PlayMapState extends Phaser.State {
   preload() {
 
     this.game.load.image('Player', 'assets/tilesets/sprites/Human (Front)/Full/player_01.png');
+    
+    // Create a new MapManager using the parsed tilemap JSON object
+    this.mapManager = new MapManager(this.game, this.mapName);
 
-    // Read the previously parsed Tiled map JSON
-    let tilemapJson = this.game.cache.getJSON(this.mapName);
-
-    // Load all the required tileset images
-    for(let tilesetId in tilemapJson.tilesets) {
-
-      let tilesetJson = tilemapJson.tilesets[tilesetId];
-      let assetName = tilesetJson.name;
-      let assetPath = 'assets/' + tilesetJson.image.substring(3);
-      
-      this.game.load.image(assetName, assetPath);
-    }
-
-    // Load the Tiled map JSON as an actual Tilemap
-    this.game.load.tilemap(this.mapName, null, tilemapJson, Phaser.Tilemap.TILED_JSON);
+    // Preload the map
+    this.mapManager.preloadMap();
   }
 
   create() {
@@ -49,7 +41,7 @@ export default class PlayMapState extends Phaser.State {
     var layer3 = this.map.createLayer('Tile Layer 3', null, null, mapLayerGroup);
 
     let player = this.game.add.sprite(200, 300, 'Player');
-
+    console.log(this.map.getLayerIndex('Tile Layer 1'));
   }
 
   update() {
