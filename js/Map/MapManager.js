@@ -10,8 +10,10 @@ export default class MapManager {
   constructor(game, mapName) {
 
     this.game = game;
-
     this.mapName = mapName;
+    this.numberOfTilesForLongDimension = 25;
+    this.numberOfTilesForShortDimension = 15;
+
   }
 
   /**
@@ -43,6 +45,30 @@ export default class MapManager {
       let assetPath = 'assets/' + tilesetJson.image.substring(3);
 
       this.game.load.image(assetName, assetPath);
+    }
+  }
+
+  createMap() {
+
+    this.tilemap = this.game.add.tilemap(this.mapName, null, null, null, null);
+    console.log(this.tilemap);
+    // Add the tileset images to the map
+    for(let tilesetId in this.tilemap.tilesets) {
+
+      let tileset = this.tilemap.tilesets[tilesetId];
+      console.log(tileset.name);
+      this.tilemap.addTilesetImage(tileset.name, tileset.name);
+    }
+
+    // Create the main group of layers
+    this.layers = this.game.add.group(undefined, 'layers');
+
+    // Create the layers
+    for(let layerId in this.tilemap.layers) {
+
+      let layer = this.tilemap.layers[layerId];
+      console.log(layer.name);
+      this.tilemap.createLayer(layer.name, null, null, this.layers);
     }
   }
 }

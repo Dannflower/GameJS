@@ -101,11 +101,7 @@ function update() {
     }
 }
 
-function render() {
-    game.debug.pointer(game.input.pointer1);
-    game.debug.cameraInfo(game.camera, 32, 32);
-    game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
-}
+
 
 function onSizeChange(scaleManager, canvasWidth, canvasHeight) {
 
@@ -122,22 +118,8 @@ function getMouseWorldY() {
   return mouse.y + game.camera.y;
 }
 
-function updateGameScale() {
-
-  // Update game scale and world size to match
-  mapLayerGroup.scale = new PIXI.Point(getScaleX(), getScaleY());
-  player.scale = mapLayerGroup.scale;
-  game.world.setBounds(0, 0, map.widthInPixels * mapLayerGroup.scale.x, map.heightInPixels * mapLayerGroup.scale.y);
-  game.camera.setBoundsToWorld;
-
-  for (var i = 0; i < mapLayerGroup.children.length; i++) {
-
-    var layer = mapLayerGroup.children[i];
-
-    layer.resize(game.world.width, game.world.height);
-  }
-
-
+function render() {
+  
 }
 
 function getScaleX() {
