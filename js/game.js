@@ -24,8 +24,6 @@ function preload() {
   game.scale.parentIsWindow = true;
 
   game.time.advancedTiming = true;
-
-
 }
 
 function create() {
@@ -41,8 +39,6 @@ function create() {
 
 
   //game.camera.follow(player);
-
-  //updateGameScale();
 
 }
 
@@ -101,13 +97,6 @@ function update() {
     }
 }
 
-
-
-function onSizeChange(scaleManager, canvasWidth, canvasHeight) {
-
-  updateGameScale();
-}
-
 function getMouseWorldX() {
 
   return mouse.x + game.camera.x;
@@ -119,37 +108,5 @@ function getMouseWorldY() {
 }
 
 function render() {
-  
-}
 
-function getScaleX() {
-
-  var tileCount;
-
-  if(game.camera.width >= game.camera.height) {
-
-    tileCount = numberOfTilesForLongDimension;
-
-  } else {
-
-    tileCount = numberOfTilesForShortDimension;
-  }
-
-  return Math.max(1, game.camera.width / (map.tileWidth * tileCount));
-}
-
-function getScaleY() {
-
-  var tileCount;
-
-  if(game.camera.height >= game.camera.width) {
-
-    tileCount = numberOfTilesForLongDimension;
-
-  } else {
-
-    tileCount = numberOfTilesForShortDimension;
-  }
-
-  return Math.max(1, game.camera.height / (map.tileHeight * tileCount));
 }

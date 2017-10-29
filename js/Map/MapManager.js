@@ -61,14 +61,71 @@ export default class MapManager {
     }
 
     // Create the main group of layers
-    this.layers = this.game.add.group(undefined, 'layers');
+    this.layersGroup = this.game.add.group(undefined, 'layers');
 
     // Create the layers
     for(let layerId in this.tilemap.layers) {
 
       let layer = this.tilemap.layers[layerId];
       console.log(layer.name);
-      this.tilemap.createLayer(layer.name, null, null, this.layers);
+      this.tilemap.createLayer(layer.name, null, null, this.layersGroup);
     }
+
+    // Update the game scale for the first time
+    this.updateGameScale();
+  }
+
+  updateGameScale() {
+
+    // Update game scale
+    this.layersGroup.scale = new PIXI.Point(this.getScaleX(), this.getScaleY());
+
+    // Update the world size to match
+    this.game.world.setBounds(0, 0, this.tilemap.widthInPixels * this.layersGroup.scale.x, this.tilemap.heightInPixels * this.layersGroup.scale.y);
+
+    // Update the camera bounds to the new world size
+    this.game.camera.setBoundsToWorld;
+
+    // Resize all of the layer so they know how much to draw
+    // If you don't do this, each layer's canvas will be to
+    // small when the scale of the map is increased
+    for (var i = 0; i < this.layersGroup.children.length; i++) {
+
+      var layer = this.layersGroup.children[i];
+
+      layer.resize(this.game.world.width, this.game.world.height);
+    }
+  }
+
+  getScaleX() {
+
+    let tileCount;
+
+    if(this.game.camera.width >= this.game.camera.height) {
+
+      tileCount = this.numberOfTilesForLongDimension;
+
+    } else {
+
+      tileCount = this.numberOfTilesForShortDimension;
+    }
+
+    return Math.max(1, this.game.camera.width / (this.tilemap.tileWidth * tileCount));
+  }
+
+  getScaleY() {
+
+    let tileCount;
+
+    if(this.game.camera.height >= this.game.camera.width) {
+
+      tileCount = this.numberOfTilesForLongDimension;
+
+    } else {
+
+      tileCount = this.numberOfTilesForShortDimension;
+    }
+
+    return Math.max(1, this.game.camera.height / (this.tilemap.tileHeight * tileCount));
   }
 }
