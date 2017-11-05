@@ -19,6 +19,8 @@ export default class MapManager {
   /**
    * Queues the backing tilemap JSON object to be loaded as Phaser.Tilemap and
    * any assets required by the map to be loaded.
+   * Should be called in a preload method separate from and before the preload method
+   * in which loadTilesetImages is invoked.
    */
   preloadMap() {
 
@@ -34,6 +36,8 @@ export default class MapManager {
 
   /**
    * Queues all of the tileset images the map requires to be loaded by the game's Phaser.Loader.
+   * Should be called in a preload method separate from and after the preload in which
+   * preloadMap was invoked.
    */
   loadTilesetImages() {
 
@@ -71,14 +75,15 @@ export default class MapManager {
       this.tilemap.createLayer(layer.name, null, null, this.layersGroup);
     }
 
-    // Update the game scale for the first time
-    this.updateGameScale();
+    // Set something to the current layer
+    this.tilemap.currentLayer = this.layersGroup.getAt(0);
   }
 
-  updateGameScale() {
+  updateGameScaleToMap() {
 
     // Update game scale
     this.layersGroup.scale = new PIXI.Point(this.getScaleX(), this.getScaleY());
+    this.player.scale = this.layersGroup.scale;
 
     // Update the world size to match
     this.game.world.setBounds(0, 0, this.tilemap.widthInPixels * this.layersGroup.scale.x, this.tilemap.heightInPixels * this.layersGroup.scale.y);
@@ -95,6 +100,11 @@ export default class MapManager {
 
       layer.resize(this.game.world.width, this.game.world.height);
     }
+  }
+
+  addPlayerToMap() {
+
+    return this.player = this.game.add.sprite(200, 300, 'Player');
   }
 
   getScaleX() {
@@ -127,5 +137,16 @@ export default class MapManager {
     }
 
     return Math.max(1, this.game.camera.height / (this.tilemap.tileHeight * tileCount));
+  }
+
+  getTileX(worldX) {
+
+    return this.tilemap.currentLayer.getTileX(worldX / this.layersGroup.scale.x);
+
+  }
+
+  getTileY(worldY) {
+
+    return this.tilemap.currentLayer.getTileY(worldY / this.layersGroup.scale.y);
   }
 }
