@@ -22,14 +22,11 @@ export default class PlayMapState extends Phaser.State {
 
   create() {
 
-    // Create input devices
-    this.cursors = this.game.input.keyboard.createCursorKeys();
-    this.mouse = this.game.input.mousePointer;
-    this.pointer = this.game.input.addPointer();
+    this.registerControls();
 
     this.mapManager.createMap();
 
-    this.player = this.mapManager.addPlayerToMap();
+    this.player = this.mapManager.addPlayerToMap('Player');
 
     this.game.camera.follow(this.player);
 
@@ -63,20 +60,20 @@ export default class PlayMapState extends Phaser.State {
 
     if(this.game.input.pointer1.isDown) {
 
-      if(this.game.input.pointer1.x > player.worldPosition.x) {
+      if(this.game.input.pointer1.x > this.player.worldPosition.x) {
 
         this.player.x += moveRate;
 
-      } else if (this.game.input.pointer1.x < player.worldPosition.x) {
+      } else if (this.game.input.pointer1.x < this.player.worldPosition.x) {
 
         this.player.x -= moveRate;
       }
 
-      if(this.game.input.pointer1.y > player.worldPosition.y) {
+      if(this.game.input.pointer1.y > this.player.worldPosition.y) {
 
         this.player.y += moveRate;
 
-      } else if (this.game.input.pointer1.y < player.worldPosition.y) {
+      } else if (this.game.input.pointer1.y < this.player.worldPosition.y) {
 
         this.player.y -= moveRate;
       }
@@ -106,6 +103,13 @@ export default class PlayMapState extends Phaser.State {
       this.game.debug.pointer(this.game.input.pointer1);
       this.game.debug.cameraInfo(this.game.camera, 32, 32);
       this.game.debug.text(this.game.time.fps || '--', 2, 14, "#00ff00");
+  }
+
+  registerControls() {
+
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.mouse = this.game.input.mousePointer;
+    this.pointer = this.game.input.addPointer();
   }
 
   getMouseWorldX() {

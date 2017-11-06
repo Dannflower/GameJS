@@ -102,9 +102,9 @@ export default class MapManager {
     }
   }
 
-  addPlayerToMap() {
+  addPlayerToMap(spriteKey) {
 
-    return this.player = this.game.add.sprite(200, 300, 'Player');
+    return this.player = this.game.add.sprite(200, 300, spriteKey);
   }
 
   getScaleX() {
